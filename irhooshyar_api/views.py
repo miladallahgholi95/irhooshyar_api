@@ -28,7 +28,7 @@ def search_document(request, text):
     total_hits = response['hits']['total']['value']
 
     if total_hits == 10000:
-        total_hits = client.count(body={"query": res_query}, index=index_name, doc_type='_doc')['count']
+        total_hits = client.count(body={"query": res_query}, index=index_name)['count']
 
     for i in range(result.__len__()):
         result[i]["_source"]["approval_reference_name"] = result[i]["_source"]["category"]
