@@ -20,5 +20,5 @@ from irhooshyar_api import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('search/<str:text>/', views.search_document, name='SearchDocument_ES_web'),
+    path('SearchDocument_ES_web/<str:text>/', views.search_document, name='SearchDocument_ES_web'),
 ]
