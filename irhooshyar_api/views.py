@@ -49,4 +49,4 @@ def search_document(request, text):
 
         result[i]["_source"]["approval_date"] = date
 
-    return JsonResponse({"result": result, 'total_hits': total_hits,})
+    return JsonResponse({"result": result, 'total_hits': total_hits, "year_chart": response['aggregations']})
