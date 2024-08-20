@@ -13,7 +13,14 @@ def search_document(request, text):
         res_query = {"match_phrase": {"content": text}}
 
     index_name = "hooshyar_document_index"
-
+    res_agg = {
+        "year-agg": {
+            "terms": {
+                "field": "datetime.year",
+                "size": bucket_size
+            }
+        },
+    }
     response = client.search(index=index_name,
                              _source_includes=['name', 'category', 'datetime'],
                              request_timeout=40,
@@ -21,7 +28,8 @@ def search_document(request, text):
                              sort=[{"datetime.year": {"order": "desc"}},
                                    {"datetime.month.number": {"order": "desc"}},
                                    {"datetime.day.number": {"order": "desc"}}],
-                             size=10)
+                             size=10,
+                             aggregations=res_agg)
 
     result = response['hits']['hits']
 
@@ -41,4 +49,4 @@ def search_document(request, text):
 
         result[i]["_source"]["approval_date"] = date
 
-    return JsonResponse({"result": result, 'total_hits': total_hits})
+    return JsonResponse({"result": result, 'total_hits': total_hits,})
