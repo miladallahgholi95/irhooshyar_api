@@ -6,6 +6,23 @@ client = Elasticsearch(es_url, timeout=30)
 bucket_size = 1000
 search_result_size = 100
 
+
+def process_agg(data):
+    keys = [d["key"] for d in data]
+    min_key = min(keys)
+    max_key = max(keys)
+
+    sorted_keys = list(range(min_key, max_key + 1))
+
+    result = []
+    key_to_doc_count = {d["key"]: d["doc_count"] for d in data}
+
+    for key in sorted_keys:
+        doc_count = key_to_doc_count.get(key, 0)
+        result.append({"key": key, "doc_count": doc_count})
+
+    return result
+
 def search_document(request, text):
     if text.replace(" ", "") == "":
         res_query = {"match_all": {}}
@@ -49,5 +66,7 @@ def search_document(request, text):
 
         result[i]["_source"]["approval_date"] = date
 
+    year_agg = process_agg(response['aggregations']["year-agg"]["buckets"])
+
     return JsonResponse({"result": result, 'total_hits': total_hits,
-                         "year_chart": response['aggregations']["year-agg"]["buckets"]})
+                         "year_chart": year_agg})
