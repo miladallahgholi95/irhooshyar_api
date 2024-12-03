@@ -9,6 +9,9 @@ search_result_size = 100
 
 def process_agg(data):
     keys = [d["key"] for d in data if d["key"] != 0]
+    if len(keys) == 0:
+        return []
+        
     min_key = min(keys)
     max_key = max(keys)
 
